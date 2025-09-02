@@ -1,25 +1,9 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addTodo, removeTodo, toggleComplete } from "./feature/todoSlice";
+import { nanoid } from "nanoid";
 
 const TodoApp = () => {
   const [newTask, setNewTask] = useState("");
-  const dispatch = useDispatch();
-
-  const addTodoHander = () => {
-    dispatch(addTodo({ text: newTask }));
-    setNewTask("");
-  };
-
-  const removeTodoHander = (id) => {
-    dispatch(removeTodo({ id }));
-  };
-
-  const toggleCompleteHandler = (id) => {
-    dispatch(toggleComplete({ id }));
-  };
-
-  const todos = useSelector((state) => state.todos);
+  const [todos, setTodos] = useState([]);
 
   return (
     <div
@@ -45,7 +29,13 @@ const TodoApp = () => {
           />
           <button
             className="flex items-center justify-center rounded-xl bg-green-400 px-6 py-3 text-white font-bold shadow-lg transition-all hover:bg-opacity-90"
-            onClick={addTodoHander}
+            onClick={() => {
+              setTodos([
+                ...todos,
+                { id: nanoid(), completed: false, text: newTask },
+              ]),
+                setNewTask("");
+            }}
           >
             Add Task
           </button>
@@ -60,9 +50,6 @@ const TodoApp = () => {
               <input
                 type="checkbox"
                 checked={todo.completed}
-                onChange={() => {
-                  toggleCompleteHandler(todo.id);
-                }}
                 className="h-5 w-5 rounded-md border-gray-300 text-green-500 focus:ring-green-500 dark:border-gray-600 dark:bg-gray-700"
               />
               <p
@@ -74,13 +61,7 @@ const TodoApp = () => {
               >
                 {todo.text}
               </p>
-              <button
-                className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
-                onClick={() => {
-                  console.log(todo.id);
-                  removeTodoHander(todo.id);
-                }}
-              >
+              <button className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300">
                 <span className="material-symbols-outlined text-xl">
                   delete
                 </span>
