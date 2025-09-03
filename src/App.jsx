@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { nanoid } from "nanoid";
+import useTodoStore from "./feature/store";
 
 const TodoApp = () => {
   const [newTask, setNewTask] = useState("");
-  const [todos, setTodos] = useState([]);
+  const { todos, addTodo, removeTodo, toggleComplete } = useTodoStore();
 
   return (
     <div
@@ -30,11 +30,8 @@ const TodoApp = () => {
           <button
             className="flex items-center justify-center rounded-xl bg-green-400 px-6 py-3 text-white font-bold shadow-lg transition-all hover:bg-opacity-90"
             onClick={() => {
-              setTodos([
-                ...todos,
-                { id: nanoid(), completed: false, text: newTask },
-              ]),
-                setNewTask("");
+              addTodo(newTask);
+              setNewTask("");
             }}
           >
             Add Task
@@ -51,6 +48,9 @@ const TodoApp = () => {
                 type="checkbox"
                 checked={todo.completed}
                 className="h-5 w-5 rounded-md border-gray-300 text-green-500 focus:ring-green-500 dark:border-gray-600 dark:bg-gray-700"
+                onClick={() => {
+                  toggleComplete(todo.id);
+                }}
               />
               <p
                 className={`flex-1 text-gray-900 dark:text-white ${
@@ -61,7 +61,12 @@ const TodoApp = () => {
               >
                 {todo.text}
               </p>
-              <button className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300">
+              <button
+                className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+                onClick={() => {
+                  removeTodo(todo.id);
+                }}
+              >
                 <span className="material-symbols-outlined text-xl">
                   delete
                 </span>
